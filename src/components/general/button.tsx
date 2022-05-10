@@ -2,6 +2,7 @@ import * as React from 'react';
 
 type ButtonProps = {
   children: string | React.ReactNode;
+  disabled?: boolean;
   onClick?: () => void;
   // By defining explicty options for type, we can prevent errors and improve
   // developer experience as these options will appear only in typeahead
@@ -13,11 +14,12 @@ type ButtonProps = {
 // By having both it's content and event come in as props, it can be highly reusable
 const Button: React.FC<ButtonProps> = ({
   children,
+  disabled = false,
   onClick,
   type = 'button',
 }) => {
   return (
-    <button onClick={onClick} type={type}>
+    <button onClick={onClick} type={type} disabled={disabled}>
       {children}
     </button>
   );
