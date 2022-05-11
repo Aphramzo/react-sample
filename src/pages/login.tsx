@@ -23,7 +23,7 @@ const Login: React.FC<{}> = () => {
 
     try {
       const result = await axios.post(
-        'https://58iiwrc1gf.execute-api.us-west-1.amazonaws.com/prod/login',
+        'https://<myapi>.amazonaws.com/prod/login',
       );
 
       // with this result we can get something like the user details along with any other
