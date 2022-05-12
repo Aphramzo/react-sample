@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { store } from './store';
+import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -9,7 +11,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App />
+    {/* Providing the store at the top level of the app ensures that 
+    every component in our tree will have access to it */}
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
 );
 
