@@ -1,6 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { User } from '../models/user';
 
+export type LoginResponse = {
+  userId: string;
+  token: string;
+};
+
 export const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://<api>.execute-api.us-west-1.amazonaws.com/prod/',
@@ -16,14 +21,23 @@ export const userApi = createApi({
     },
   }),
   endpoints: (build) => ({
-    login: build.mutation<User, { username: string; password: string }>({
+    login: build.mutation<
+      LoginResponse,
+      { username: string; password: string }
+    >({
       query: (body) => ({
         url: 'login',
         method: 'POST',
         body,
       }),
     }),
+    getUser: build.query<User, void>({
+      query: () => ({
+        url: 'user',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = userApi;
+export const { useLoginMutation, useGetUserQuery } = userApi;

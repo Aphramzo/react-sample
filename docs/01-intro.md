@@ -38,3 +38,12 @@ This project was bootstrapped with [Create React App](https://create-react-app.d
 ```
 You don't need to learn and configure many build tools. Instant reloads help you focus on development. When it's time to deploy, your bundles are optimized automatically.
 ```
+
+### Build Tools
+
+Under the hood CRA is managing and using many tools that would otherwise need to be configured and managed separately, including
+
+- Webpack
+- Babel
+- ESLint
+- Jest

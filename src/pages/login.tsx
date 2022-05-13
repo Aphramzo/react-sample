@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../store/auth';
 import { Button } from '../components/general/button';
 import LoginForm from '../components/login/loginForm';
+import { DASHBOARD_ROUTE } from '../constants/routes';
 import { useLoginMutation } from '../store/user';
 
 const Login: React.FC<{}> = () => {
@@ -13,6 +17,20 @@ const Login: React.FC<{}> = () => {
   //by using the rtk api, we get fetching, loading states, error states,
   // and result caching out of the box
   const [login, { data: user, isLoading }] = useLoginMutation();
+
+  // React router provides simple hooks to all us to control the route the user is currently on
+  const navigate = useNavigate();
+
+  // classic example of manually using rkt slices instead of
+  // the query option shown with login
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user) {
+      dispatch(setCredentials(user));
+      navigate(`/${DASHBOARD_ROUTE}`);
+    }
+  }, [user, navigate, dispatch]);
 
   const onSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,11 +49,6 @@ const Login: React.FC<{}> = () => {
 
   return (
     <div>
-      {user && (
-        <div>
-          Welcome {user.firstName} {user.lastName}!
-        </div>
-      )}
       <form onSubmit={onSubmitLogin}>
         <LoginForm onChange={onValueChange} />
         <Button type="submit" disabled={isLoading}>
