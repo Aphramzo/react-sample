@@ -8,12 +8,18 @@ type LoginFormProps = {
 const LoginForm: React.FC<LoginFormProps> = ({ onChange }) => {
   return (
     <div>
-      <Input name="username" labelText="Username" onChange={onChange} />
       <Input
-        name="password"
-        labelText="Password"
-        type="password"
+        data-testId="login-username"
+        labelText="Username"
+        name="username"
         onChange={onChange}
+      />
+      <Input
+        data-testId="login-password"
+        labelText="Password"
+        name="password"
+        onChange={onChange}
+        type="password"
       />
     </div>
   );
