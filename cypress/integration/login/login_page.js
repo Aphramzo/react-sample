@@ -1,39 +1,56 @@
 import LoginPage from '../../support/page-objects/LoginPage'
 
-describe('login page elements', () => {
-  beforeEach(() => {
-    cy.visit('http://localhost:3000/login')
-    cy.wrap(LoginPage()).as('page')
-  })
-  
-  it('displays user name text field', () => {
-    cy.get('@page').then((page) => {
-      page.username_input().should('be.visible')
+describe('Login Page', () => {
+    beforeEach(() => {
+        cy.visit('http://localhost:3000/login')
+        cy.intercept({method: 'POST',url: '/prod/login',}).as('login-api');
+        cy.wrap(LoginPage()).as('page')
     })
-  })
-  
-  it('displays password text field', () => {
-    cy.get('@page').then((page) => {
-      page.password_input().should('be.visible')
-    })
-  })
 
-  it('displays submit button', () => {
-    cy.get('@page').then((page) => {
-      page.submit_button().should('exist')
-    })
-  })
-  
-  
-  describe('login in low', () => {
-    it('should let me login after entering username and password', () => {
-      cy.currentPage((page) => {
-        page.username_input().type('test')
-        page.password_input().type('123')
-        page.submit_button().click()
+    describe('Login Components', () => {
+      Object.getOwnPropertyNames(LoginPage().login_components).forEach((comp) => {
+          it(`displays ${comp}`, () => {
+            cy.get('@page').then((page) => {
+              page[comp]().should('be.visible')
+            })
+          })
       })
     })
-    
+  
+  
+  describe('login in flow', () => {
+
+    describe('with valid username and password', () => {
+        beforeEach(() => {
+            cy.currentPage((page) => {
+                page.login('ironman', 'stark')
+            })
+        })
+
+        it('should return 200 in login api', () => {
+            cy.wait('@login-api').then(({request, response}) => {
+                expect(response.statusCode).to.eq(200)
+            })
+        })
+
+        it('should redirect me to dashboard page', () => {
+            cy.wait('@login-api')
+            cy.url().then((url) => {
+                expect(url).to.be.eql('http://localhost:3000/dashboard')
+            })
+        })
+    })
+
+    describe('with invalid credentials', () => {
+        it('should return 401 with bad password', () => {
+            cy.currentPage((page) => {
+                page.login('asdf', 'password')
+                cy.wait('@login-api').then(({request, response}) => {
+                    expect(response.statusCode).to.eq(401)
+                })
+            })
+        })
+    })
   })
   
 })
